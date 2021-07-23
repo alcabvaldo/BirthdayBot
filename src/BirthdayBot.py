@@ -47,6 +47,6 @@ async def _nickprueba(ctx,new_nick=None):
 
 #funciones.add_cumple("NombrePrueba","ServerPrueba","12","20")
 
-funciones.probarnearestdate()
+funciones.test_nearest_date()
 
 #bot.run(config('BOT_KEY'))

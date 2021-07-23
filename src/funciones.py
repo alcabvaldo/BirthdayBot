@@ -1,5 +1,6 @@
 import json
 import datetime
+import os
 
 
 
@@ -33,7 +34,7 @@ def add_cumple(nombre,server,mes,dia):
     #print(json.dumps(miembros,indent="   "))
 
 
-def probarnearestdate():
+def test_nearest_date():
     miembros = get_miembros()
     auxpersona = find_next_birthday("Noice",miembros)
     print(auxpersona)
@@ -44,20 +45,23 @@ def find_next_birthday(server,miembros):
 
     #fecha actual en dias desde 1 de enero
     hoy = datetime.date.today().timetuple().tm_yday
+    print("hoy hay en dias "+str(hoy))
 
     #diferencia minima encontrada entre dos fechas
     mindiff = 366
 
     for clave, persona in miembros.items():
-        if (persona["Server"] == server):
+        #se evita count que es el primer elemento en el json
+        if (clave!= "count" and persona["Server"] == server):
             auxdias = dias_desde_1enero(persona["mes"],persona["dia"])
-            if (auxdias>=hoy and hoy-auxdias<mindiff) : #si la fecha es despues en el año
-                mindiff = hoy-auxdias
+            if (auxdias>=hoy and auxdias-hoy<mindiff) : #si la fecha es despues en el año
+                mindiff = auxdias-hoy
                 persona_mas_cercana = persona
-            elif (auxdias<hoy and hoy-auxdias-365>mindiff) : #si la fecha es antes en el año (pasado el año nuevo)
-                mindiff = hoy-auxdias-365
+            elif (auxdias<hoy and auxdias+365-hoy<mindiff) : #si la fecha es antes en el año (pasado el año nuevo)
+                mindiff = auxdias+365-hoy
                 persona_mas_cercana = persona
-    
+
+    print("Faltan "+str(mindiff)+" dias para el cumple de "+persona_mas_cercana["Nombre"])
     return persona_mas_cercana    
 
 
@@ -65,8 +69,9 @@ def find_next_birthday(server,miembros):
 # calcula la cantidad de dias pasados desde el 01/01 hasta esa fecha ####################
 #source: https://stackoverflow.com/questions/620305/convert-year-month-day-to-day-of-year-in-python
 def dias_desde_1enero(mes, dia):
-    auxdate = datetime.date(datetime.MINYEAR,mes,dia)
+    auxdate = datetime.date(datetime.MINYEAR,int(mes),int(dia))
     diasdesdeenero = auxdate.timetuple().tm_yday
+    print("para el "+mes+"/"+dia+"los dias son: "+str(diasdesdeenero))
     return diasdesdeenero
 
 
@@ -82,12 +87,13 @@ def not_already_there(new_miembro,miembros):
 
 #############################################
 def get_miembros():
-    with open("data_file.json",) as archivo:
+    print(os.getcwd())
+    with open("src/data_file.json",) as archivo:
         dato = json.load(archivo)
         return dato
 
 
 #############################################
 def actualizar_miembros(miembro):
-    with open("data_file.json","w") as archivo:
+    with open("src/data_file.json","w") as archivo:
         json.dump(miembro,archivo,indent="   ")
