@@ -43,10 +43,17 @@ async def _nickprueba(ctx,new_nick=None):
     if (new_nick):
         await ctx.author.edit(nick=new_nick)
 
+# devulve cuanto falta para el cumple mas cercano ##########
+@bot.command(name='proximo')
+async def _proximo(ctx):
+    server = ctx.message.guild.name
+    resultado = funciones.str_proximo_cumple(server)
+    await ctx.send(resultado)
+
 
 
 #funciones.add_cumple("NombrePrueba","ServerPrueba","12","20")
 
-funciones.test_nearest_date()
+#funciones.test_nearest_date()
 
-#bot.run(config('BOT_KEY'))
+bot.run(config('BOT_KEY'))
