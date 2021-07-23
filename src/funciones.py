@@ -1,5 +1,4 @@
 import json
-import moment
 import datetime
 
 
@@ -34,6 +33,10 @@ def add_cumple(nombre,server,mes,dia):
     #print(json.dumps(miembros,indent="   "))
 
 
+def probarnearestdate():
+    miembros = get_miembros()
+    auxpersona = find_next_birthday("Noice",miembros)
+    print(auxpersona)
 
 
 #encuentra la persona con el cumpleaños mas proximo en un server especifico####################

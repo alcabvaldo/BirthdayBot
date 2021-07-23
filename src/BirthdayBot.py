@@ -30,8 +30,6 @@ async def _setcumple(ctx,dia=None,mes=None):
     
     await ctx.send(resultado)
 
-    #await ctx.send(json.dumps(nuevo_miembro,indent=3))
-
 
 # ver los datos guardados ###########
 @bot.command(name='ver')
@@ -49,6 +47,6 @@ async def _nickprueba(ctx,new_nick=None):
 
 #funciones.add_cumple("NombrePrueba","ServerPrueba","12","20")
 
-
+funciones.probarnearestdate()
 
 #bot.run(config('BOT_KEY'))

@@ -2,4 +2,5 @@
 basura/
 BirthdayBot/
 src/.env
+src/data_file.json
 
