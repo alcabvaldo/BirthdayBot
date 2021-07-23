@@ -38,6 +38,7 @@ def test_nearest_date():
     miembros = get_miembros()
     auxpersona = find_next_birthday("Noice",miembros)
     print(auxpersona)
+
 def str_proximo_cumple(server):
     mes_actual = datetime.date.today().month
     dia_actual = datetime.date.today().day
@@ -48,6 +49,8 @@ def str_proximo_cumple(server):
 
 
 #encuentra la persona con el cumpleaños mas proximo en un server especifico####################
+#server: nombre del server 
+#miembros: el json(dict?) con los datos de personas
 def find_next_birthday(server,miembros):
 
     #fecha actual en dias desde 1 de enero
@@ -69,7 +72,7 @@ def find_next_birthday(server,miembros):
                 mindiff = dif
                 persona_mas_cercana = persona
 
-    print("Faltan "+str(mindiff)+" dias para el cumple de "+persona_mas_cercana["Nombre"])
+    #print("Faltan "+str(mindiff)+" dias para el cumple de "+persona_mas_cercana["Nombre"])
     return persona_mas_cercana    
 
 
