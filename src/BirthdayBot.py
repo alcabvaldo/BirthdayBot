@@ -3,14 +3,15 @@ import discord
 import funciones
 from discord.ext import commands    
 from decouple import config         #es para ver las variables definidas en el  .env
-
-intents = discord.Intents.default()
-intents.members = True
-
-
 import json
 
-bot = commands.Bot(command_prefix='cumple', intents=intents)
+intent = discord.Intents.default()
+intent.members = True
+
+
+
+
+bot = commands.Bot(command_prefix='cumple', intents=intent)
 
 @bot.event
 async def on_ready():
@@ -21,18 +22,25 @@ async def _owo(ctx):
     await ctx.send("owo")
 
 
+## este post me sirvio para pillar el problema de missing permissions:
+# el problema era que no se puede cambiar el nick al owner ni a los que tienen rol superior 
+# https://stackoverflow.com/questions/56117594/discord-js-bot-dosnt-have-permission-to-manage-nicknames?newreg=04518609044a4bb895f1cb6f8d0b4c7d
 
 ###################################################################
 #source: https://stackoverflow.com/questions/65808190/get-all-members-discord-py
-@bot.command(name="members")
-async def _members(ctx):
+@bot.command(name="_change_member_names")
+async def _change_member_names(ctx):
     for guild in bot.guilds:
         for member in guild.members:
-            oldname = member.name
-            #cambia la primera letra
-            newname = "P" + oldname[1:len(oldname)]
-            await member.edit(nick=newname)
-            print(member)
+            if (member.id != ctx.guild.owner_id):
+                print("ahora intentare cambiar "+str(member))
+                oldname = member.name
+                #cambia la primera letra
+                try:
+                    newname = "OWO" + oldname[1:len(oldname)]
+                    await member.edit(nick=newname)
+                except Exception as e : #no cambia los nombres de los miembros con roles superiores
+                    print(e)
 
 
 
