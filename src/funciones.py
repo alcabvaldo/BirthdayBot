@@ -1,20 +1,15 @@
 import json
 import datetime
-import os           #para el get current directory (gcd)
+import os           #para el get current directory (gcd) (BORRAR)
 
 
 
 ######################################################
-def add_cumple(nombre,server,mes,dia):
-    #print(mes,dia)
-
-    #creo el objeto new_miembro
-    new_miembro = {
-        "Nombre": nombre,
-        "Server": server,
-        "dia": dia,
-        "mes": mes
-    }
+def add_cumple(nuevo_miembro):
+    """
+        Reciebe un miembro y lo guarda en el Json
+        retorna un string diciendo si es que se añadió o no el cumpleaños
+    """
 
     #traigo la lista de cumpleaños guardados del json
     miembros = get_miembros()
@@ -22,24 +17,43 @@ def add_cumple(nombre,server,mes,dia):
     # new_miembro sera el k-ésimo miembro
     k = miembros["count"] + 1
     
-    if (not_already_there(new_miembro,miembros)):
-        miembros[k] = new_miembro
+    pos = find_pos_of_miembro(nuevo_miembro,miembros)
+
+    if ( pos == 0 ): #todavia no esta en la lista
+        miembros[k] = nuevo_miembro
         miembros["count"] = miembros["count"] + 1
         actualizar_miembros(miembros)
         
         return "añadido!"
-    else :
-        return "ya tenes ya guardado un cumpleaños"
+    else : #ya esta en la lista, entonces actualiza
+        miembros[pos] = nuevo_miembro
+        actualizar_miembros(miembros)
 
-    #print(json.dumps(miembros,indent="   "))
+        return "actualizado!"
 
 
-def test_nearest_date():
-    miembros = get_miembros()
-    auxpersona = find_next_birthday("Noice",miembros)
-    print(auxpersona)
+def find_pos_of_miembro(new_miembro,miembros):
+    """
+        Retorna la posicion de la persona en la lista
+        Retorna 0 si no se encuentra
+    """
+    for clave, persona in miembros.items():
+        #verifica que no sea count para que funcione, esto es por como hice el json
+        if (clave != "count") and ((persona["Nombre"])==new_miembro["Nombre"]) and ((persona["Server"])==new_miembro["Server"]) :
+            return int(clave) 
+            #aca estoy asumiento que es un int, esta bien eso?
+    return 0
+
+
+
+
+
+
 
 def str_proximo_cumple(server):
+    """
+        Retorna un texto diciendo quien sera la proxima persona en cumplir años
+    """
     mes_actual = datetime.date.today().month
     dia_actual = datetime.date.today().day
     miembros = get_miembros()
@@ -48,15 +62,23 @@ def str_proximo_cumple(server):
     return ("El proximo cumple es el de "+proxima_persona["Nombre"]+" ("+proxima_persona["dia"]+"/"+proxima_persona["mes"]+"), Faltan "+str(dias_que_faltan)+" dias!!!!")
 
 
-#encuentra la persona con el cumpleaños mas proximo en un server especifico####################
-#server: nombre del server 
-#miembros: el json(dict?) con los datos de personas
+
+
+
+
+
 def find_next_birthday(server,miembros):
+    """
+        Encuentra a persona con el cumpleaños mas proximo en un server especifico
+        
+        Parametros:
+            server (str) : nombre del server
+            miembros (el json) : el json (en forma de diccionario) con los datos guardados 
+    """
 
     #fecha actual en dias desde 1 de enero
     mes_actual = datetime.date.today().month
     dia_actual = datetime.date.today().day
-    #print("hoy hay en dias "+str(hoy))
 
     #diferencia minima encontrada entre dos fechas
     mindiff = 366
@@ -72,7 +94,6 @@ def find_next_birthday(server,miembros):
                 mindiff = dif
                 persona_mas_cercana = persona
 
-    #print("Faltan "+str(mindiff)+" dias para el cumple de "+persona_mas_cercana["Nombre"])
     return persona_mas_cercana    
 
 
@@ -98,19 +119,19 @@ def dias_desde_1enero(mes, dia):
 
 
 
-#busca si una persona no se encuentra ya en la lista###############
-def not_already_there(new_miembro,miembros):
-    for clave, persona in miembros.items():
-        #verifica que no sea count para que funcione, esto es por como hice el json
-        if (clave != "count") and ((persona["Nombre"])==new_miembro["Nombre"]) and ((persona["Server"])==new_miembro["Server"]) :
-            return False
-    return True
 
+
+
+
+
+
+
+#aca falta considerar si es que no existe el archivo
 
 #############################################
 def get_miembros():
     #print(os.getcwd())
-    with open("src/data_file.json",) as archivo:
+    with open("src/data_file.json","r") as archivo:
         dato = json.load(archivo)
         return dato
 

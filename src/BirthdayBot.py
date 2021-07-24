@@ -1,7 +1,7 @@
 
 import discord
 import funciones
-from discord.ext import commands    
+from discord.ext import tasks,commands    
 from decouple import config         #es para ver las variables definidas en el  .env
 import json
 
@@ -22,25 +22,57 @@ async def _owo(ctx):
     await ctx.send("owo")
 
 
+
+
+
+#### Para el LOOP ###################################################
+
+
+
 ## este post me sirvio para pillar el problema de missing permissions:
 # el problema era que no se puede cambiar el nick al owner ni a los que tienen rol superior 
 # https://stackoverflow.com/questions/56117594/discord-js-bot-dosnt-have-permission-to-manage-nicknames?newreg=04518609044a4bb895f1cb6f8d0b4c7d
 
-###################################################################
-#source: https://stackoverflow.com/questions/65808190/get-all-members-discord-py
-@bot.command(name="_change_member_names")
-async def _change_member_names(ctx):
+
+#inspiracion: https://stackoverflow.com/questions/65808190/get-all-members-discord-py
+
+@tasks.loop(hours=24.0) #para que haga cada tanto
+async def change_member_names():
+    """
+        Cambia las iniciales de todos los miembros en todos los servers en los
+        que se encuentra el bot por la inicial del cumpleañero mas cercano para
+        cada server
+    """
+
+    miembros = funciones.get_miembros()
+
     for guild in bot.guilds:
+
+        cumpleañero = funciones.find_next_birthday(guild.id,miembros)
+        inicial = cumpleañero["Inicial"]
+
         for member in guild.members:
-            if (member.id != ctx.guild.owner_id):
-                print("ahora intentare cambiar "+str(member))
-                oldname = member.name
-                #cambia la primera letra
-                try:
-                    newname = "OWO" + oldname[1:len(oldname)]
-                    await member.edit(nick=newname)
-                except Exception as e : #no cambia los nombres de los miembros con roles superiores
-                    print(e)
+            #if (member.id != guild.owner_id): borrar esto despues si anda
+
+            print("ahora intentare cambiar "+str(member))
+            oldname = member.name
+            #cambia la primera letra
+            try:
+                newname = inicial + oldname[1:len(oldname)] #desde la segunda letra hasta el final del nombre
+                await member.edit(nick=newname)
+                
+            #no cambia los nombres de los miembros con roles superiores
+            except Exception as e :
+                print(e)
+
+
+@change_member_names.before_loop
+async def waiter():
+    print("Waiting for login")
+    await bot.wait_until_ready()
+
+change_member_names.start()
+######################################################
 
 
 
@@ -48,11 +80,22 @@ async def _change_member_names(ctx):
 
 # cargar un usuario nuevo ##########
 @bot.command(name='cargar')
-async def _setcumple(ctx,dia=None,mes=None):
+async def _setcumple(ctx,dia=None,mes=None,inicial=None):
     nombre = ctx.message.author.name
-    server = ctx.message.guild.name
+    server = ctx.message.guild.id
+    server_name = ctx.message.guild.name
+
+    #creo el objeto new_miembro
+    nuevo_miembro = {
+        "Nombre": nombre,
+        "Inicial": inicial,
+        "Server": server,
+        "Server_name": server_name,
+        "dia": dia,
+        "mes": mes
+    }
     
-    resultado = funciones.add_cumple(nombre,server,mes,dia)
+    resultado = funciones.add_cumple(nuevo_miembro)
     
     await ctx.send(resultado)
 
@@ -72,14 +115,18 @@ async def _nickprueba(ctx,new_nick=None):
 # devulve cuanto falta para el cumple mas cercano ##########
 @bot.command(name='proximo')
 async def _proximo(ctx):
-    server = ctx.message.guild.name
+    server = ctx.message.guild.id
     resultado = funciones.str_proximo_cumple(server)
     await ctx.send(resultado)
 
 
 
-#funciones.add_cumple("NombrePrueba","ServerPrueba","12","20")
 
-#funciones.test_nearest_date()
 
+
+
+
+
+
+# Iniciar el BOT #########
 bot.run(config('BOT_KEY'))
