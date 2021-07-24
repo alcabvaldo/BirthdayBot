@@ -72,8 +72,11 @@ async def waiter():
     await bot.wait_until_ready()
 
 change_member_names.start()
-######################################################
+#######################################################################
 
+@bot.command(name='actualizarnombres') #fuerza la llamada a changememberr.. eso
+async def _actualizarnombres(ctx):
+    await change_member_names()
 
 
 

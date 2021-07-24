@@ -14,19 +14,21 @@ def add_cumple(nuevo_miembro):
     #traigo la lista de cumpleaños guardados del json
     miembros = get_miembros()
 
-    # new_miembro sera el k-ésimo miembro
-    k = miembros["count"] + 1
-    
     pos = find_pos_of_miembro(nuevo_miembro,miembros)
 
     if ( pos == 0 ): #todavia no esta en la lista
+
+        # new_miembro sera el k-ésimo miembro
+        k = miembros["count"] + 1
+
         miembros[k] = nuevo_miembro
         miembros["count"] = miembros["count"] + 1
         actualizar_miembros(miembros)
         
         return "añadido!"
+    
     else : #ya esta en la lista, entonces actualiza
-        miembros[pos] = nuevo_miembro
+        miembros[str(pos)] = nuevo_miembro
         actualizar_miembros(miembros)
 
         return "actualizado!"
@@ -74,6 +76,8 @@ def find_next_birthday(server,miembros):
         Parametros:
             server (str) : nombre del server
             miembros (el json) : el json (en forma de diccionario) con los datos guardados 
+        Retorna:
+            persona_mas_cercana (miembro): la persona
     """
 
     #fecha actual en dias desde 1 de enero
