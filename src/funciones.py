@@ -68,7 +68,7 @@ def es_miembro_invalido(miembro):
     """
         Verifica si el formato de un miembro es el adecuado
         retorna numericos para distintos tipos de errores
-        1: no introdujo datos
+        1: datos son nulos
         2: datos no son del tipo correcto
         3: fecha invalida
         
