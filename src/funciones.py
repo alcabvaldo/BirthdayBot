@@ -41,7 +41,7 @@ def find_pos_of_miembro(new_miembro,miembros):
     """
     for clave, persona in miembros.items():
         #verifica que no sea count para que funcione, esto es por como hice el json
-        if (clave != "count") and ((persona["Nombre"])==new_miembro["Nombre"]) and ((persona["Server"])==new_miembro["Server"]) :
+        if (clave != "count") and ((persona["Id"])==new_miembro["Id"]) and ((persona["Server"])==new_miembro["Server"]) :
             return int(clave) 
             #aca estoy asumiento que es un int, esta bien eso?
     return 0
@@ -74,7 +74,7 @@ def find_next_birthday(server,miembros):
         Encuentra a persona con el cumpleaños mas proximo en un server especifico
         
         Parametros:
-            server (str) : nombre del server
+            server (str) : Id del server
             miembros (el json) : el json (en forma de diccionario) con los datos guardados 
         Retorna:
             persona_mas_cercana (miembro): la persona

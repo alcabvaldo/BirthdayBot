@@ -27,21 +27,18 @@ async def _owo(ctx):
 
 #### Para el LOOP ###################################################
 
-
-
 ## este post me sirvio para pillar el problema de missing permissions:
-# el problema era que no se puede cambiar el nick al owner ni a los que tienen rol superior 
 # https://stackoverflow.com/questions/56117594/discord-js-bot-dosnt-have-permission-to-manage-nicknames?newreg=04518609044a4bb895f1cb6f8d0b4c7d
+# el problema era que no se puede cambiar el nick al owner ni a los que tienen rol superior 
 
 
 #inspiracion: https://stackoverflow.com/questions/65808190/get-all-members-discord-py
-
 @tasks.loop(hours=24.0) #para que haga cada tanto
 async def change_member_names():
     """
         Cambia las iniciales de todos los miembros en todos los servers en los
-        que se encuentra el bot por la inicial del cumpleañero mas cercano para
-        cada server
+        que se encuentra el bot por la inicial del cumpleañero mas cercano
+        respectivo en cada server
     """
 
     miembros = funciones.get_miembros()
@@ -52,7 +49,6 @@ async def change_member_names():
         inicial = cumpleañero["Inicial"]
 
         for member in guild.members:
-            #if (member.id != guild.owner_id): borrar esto despues si anda
 
             print("ahora intentare cambiar "+str(member))
             oldname = member.name
@@ -74,7 +70,7 @@ async def waiter():
 change_member_names.start()
 #######################################################################
 
-@bot.command(name='actualizarnombres') #fuerza la llamada a changememberr.. eso
+@bot.command(name='actualizarnombres') #fuerza la llamada a changemembernames
 async def _actualizarnombres(ctx):
     await change_member_names()
 
@@ -85,12 +81,14 @@ async def _actualizarnombres(ctx):
 @bot.command(name='cargar')
 async def _setcumple(ctx,dia=None,mes=None,inicial=None):
     nombre = ctx.message.author.name
+    Id     = ctx.message.author.id
     server = ctx.message.guild.id
     server_name = ctx.message.guild.name
 
     #creo el objeto new_miembro
     nuevo_miembro = {
         "Nombre": nombre,
+        "Id": Id,
         "Inicial": inicial,
         "Server": server,
         "Server_name": server_name,
