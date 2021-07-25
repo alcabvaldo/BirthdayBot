@@ -11,11 +11,21 @@ def add_cumple(nuevo_miembro):
         retorna un string diciendo si es que se añadió o no el cumpleaños
     """
 
+    # verifico que los datos introducidos hayan sido validos
+    ans = es_miembro_invalido(nuevo_miembro)
+    if ( ans ):
+        respuestas = {
+            1: "Para introducir un cumpleaños debe ser de esta manera:\n cumplecargar <dia> <mes> <inicial>",
+            2: "El formato debería ser:\n cumplecargar <dia> <mes> <inicial>",
+            3: "Esa fecha no es válida"
+        }
+        return respuestas[ans]
+
+
     #traigo la lista de cumpleaños guardados del json
     miembros = get_miembros()
 
     pos = find_pos_of_miembro(nuevo_miembro,miembros)
-
     if ( pos == 0 ): #todavia no esta en la lista
 
         # new_miembro sera el k-ésimo miembro
@@ -26,7 +36,7 @@ def add_cumple(nuevo_miembro):
         actualizar_miembros(miembros)
         
         return "añadido!"
-    
+
     else : #ya esta en la lista, entonces actualiza
         miembros[str(pos)] = nuevo_miembro
         actualizar_miembros(miembros)
@@ -45,6 +55,38 @@ def find_pos_of_miembro(new_miembro,miembros):
             return int(clave) 
             #aca estoy asumiento que es un int, esta bien eso?
     return 0
+
+def verificar_fecha(mes,dia):
+    """Verifica si una fecha dada es válida"""
+    try:
+        datetime.date(datetime.MINYEAR,int(mes),int(dia))
+        return True
+    except Exception as e :
+        return False
+
+def es_miembro_invalido(miembro):
+    """
+        Verifica si el formato de un miembro es el adecuado
+        retorna numericos para distintos tipos de errores
+        1: no introdujo datos
+        2: datos no son del tipo correcto
+        3: fecha invalida
+        
+        0: no detectó ningun error
+    """
+    dia = miembro["dia"]
+    mes = miembro["mes"]
+    inicial = miembro["Inicial"]
+
+    if (dia==None or mes==None or inicial== None):
+        return 1
+    if ( not(str(dia).isnumeric()) or not(str(mes).isnumeric()) or len(inicial)>1):
+        return 2
+    if (verificar_fecha(mes,dia) == False):
+        return 3   
+    
+    return 0
+
 
 
 
@@ -86,6 +128,7 @@ def find_next_birthday(server,miembros):
 
     #diferencia minima encontrada entre dos fechas
     mindiff = 366
+    persona_mas_cercana = None
 
     for clave, persona in miembros.items():
         #se evita count que es el primer elemento en el json
@@ -98,7 +141,8 @@ def find_next_birthday(server,miembros):
                 mindiff = dif
                 persona_mas_cercana = persona
 
-    return persona_mas_cercana    
+    if (persona_mas_cercana): #por si no haya nadie
+        return persona_mas_cercana    
 
 
 
@@ -128,19 +172,19 @@ def dias_desde_1enero(mes, dia):
 
 
 
-
-
 #aca falta considerar si es que no existe el archivo
 
 #############################################
 def get_miembros():
+    """retorna <miembros>, la lista con los integrantes y sus datos"""
     #print(os.getcwd())
     with open("src/data_file.json","r") as archivo:
-        dato = json.load(archivo)
-        return dato
+        miembros = json.load(archivo)
+        return miembros
 
 
 #############################################
 def actualizar_miembros(miembro):
+    """Recibe la lista actualizada <miembros> y la guarda en el json"""
     with open("src/data_file.json","w") as archivo:
         json.dump(miembro,archivo,indent="   ")

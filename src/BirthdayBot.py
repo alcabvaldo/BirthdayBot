@@ -46,20 +46,23 @@ async def change_member_names():
     for guild in bot.guilds:
 
         cumpleañero = funciones.find_next_birthday(guild.id,miembros)
-        inicial = cumpleañero["Inicial"]
 
-        for member in guild.members:
+        if (cumpleañero): # por si no haya nadie
 
-            print("ahora intentare cambiar "+str(member))
-            oldname = member.name
-            #cambia la primera letra
-            try:
-                newname = inicial + oldname[1:len(oldname)] #desde la segunda letra hasta el final del nombre
-                await member.edit(nick=newname)
-                
-            #no cambia los nombres de los miembros con roles superiores
-            except Exception as e :
-                print(e)
+            inicial = cumpleañero["Inicial"]
+
+            for member in guild.members:
+
+                print("ahora intentare cambiar "+str(member))
+                oldname = member.name
+                #cambia la primera letra
+                try:
+                    newname = inicial + oldname[1:len(oldname)] #desde la segunda letra hasta el final del nombre
+                    await member.edit(nick=newname)
+                    
+                #no cambia los nombres de los miembros con roles superiores
+                except Exception as e :
+                    print(e)
 
 
 @change_member_names.before_loop
@@ -97,7 +100,7 @@ async def _setcumple(ctx,dia=None,mes=None,inicial=None):
     }
     
     resultado = funciones.add_cumple(nuevo_miembro)
-    
+    # imprime un mensaje diciendo si se pudo agregar o no
     await ctx.send(resultado)
 
 
