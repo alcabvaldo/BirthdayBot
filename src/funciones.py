@@ -113,9 +113,9 @@ def str_proximo_cumple(server):
 
     dias_que_faltan = diferencia_de_fechas(mes_actual,dia_actual,int(mes),int(dia))
     if (dias_que_faltan>1):
-        return ("El proximo cumple es el de "+nombre+" ("+dia+"/"+mes+"), Faltan "+str(dias_que_faltan)+" dias!!!!")
+        return ("El próximo cumple es el de "+nombre+" ("+dia+"/"+mes+"). Faltan "+str(dias_que_faltan)+" dias!!!!")
     elif (dias_que_faltan==1):
-        return ("El proximo cumple es el de "+nombre+" ("+dia+"/"+mes+"), Es mañana!!!")
+        return ("El próximo cumple es el de "+nombre+" ("+dia+"/"+mes+"). Es mañana!!!")
     else: ## asumo que dias que faltan no es menor a 0 xd 
         return ("Feliz cumple "+nombre+"!!!!")
 
