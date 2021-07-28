@@ -5,7 +5,7 @@ import funciones
 from discord.ext import tasks,commands    
 from decouple import config         #es para ver las variables definidas en el  .env
 import json
-from discord import Color
+from discord import Color #https://stackoverflow.com/questions/63768372/color-codes-for-discord-py
 
 intent = discord.Intents.default() # para tener permiso de cambiar los nombres
 intent.members = True
@@ -23,33 +23,43 @@ bot = commands.Bot(command_prefix='/cumple',activity=activity, intents=intent)
 async def on_ready():
     print('We have logged in as {0.user}'.format(bot))
 
-@bot.command(name='owo')
-async def _owo(ctx):
+@bot.command(name='uwu')
+async def _uwu(ctx):
     await ctx.send("owo")
 
 ## para HELP #########################################################
 
 bot.remove_command("help")
+rosadito = Color.from_rgb(255,192,203)
 
 @bot.group(invoke_without_command=True)
 async def ayuda(ctx):
-	embed = discord.Embed(title = "Hola",color=Color.from_rgb(255,192,203),description = "Usa /cumpleayuda <comando> para una descripcion más específica de cada comando (mentira eso no esta todavia)")
-	embed.set_thumbnail(url="https://raw.githubusercontent.com/alcabvaldo/BirthdayBot/main/logo.png")
+	embed = discord.Embed(title = "Hola!!",color=rosadito,description = "Usa /cumpleayuda <comando> para una descripcion más específica de cada comando")
+	embed.set_thumbnail(url="https://raw.githubusercontent.com/alcabvaldo/BirthdayBot/main/logo_no_bg.png")
 
-	embed.add_field(name="cumplecargar",value="carga un cumple nuevo, o actualiza uno que ya esté guardado")
-	embed.add_field(name="cumpleproximo",value="te cuenta cuál será el próximo cumpleaños")
-	embed.add_field(name="nose",value="nose")
+	embed.add_field(inline=False,name="cargar",value="carga un cumple nuevo, o actualiza uno que ya esté guardado")
+	embed.add_field(inline=False,name="proximo",value="te cuenta cuál será el próximo cumpleaños")
+	embed.add_field(inline=False,name="ver",value="Muestra los cumpleaños que están guardados en el server")
 
 	await ctx.send(embed = embed)
 
 @ayuda.command()
-async def cumplecargar(ctx):
-	embed = discord.Embed(title = "cumplecargar",description = "Usa /cumpleayuda <comando> para una descripcion más específica de cada comando (mentira eso no esta todavia)")
-	embed.add_field(name="cumplecargar",value="carga un cumple nuevo, o actualiza uno que ya esté guardado")
-	
+async def cargar(ctx):
+	embed = discord.Embed(title = "cargar",color=rosadito,description = "Carga un cumple nuevo")
+	embed.add_field(name="syntax",value="/cumplecargar <dia> <mes> <inicial>")
+	await ctx.send(embed = embed)
 
+@ayuda.command()
+async def proximo(ctx):
+	embed = discord.Embed(title = "proximo",color=rosadito,description = "Dice quien sera la proxima persona en cumplir años")
+	embed.add_field(name="syntax",value="escribí nomas y ya te va salir")
+	await ctx.send(embed = embed)
 
-
+@ayuda.command()
+async def ver(ctx):
+	embed = discord.Embed(title = "ver",color=rosadito,description = "Muestra los cumpleaños que están guardados en el server")
+	embed.add_field(name="syntax",value="al escribir el comando ya te sale")
+	await ctx.send(embed = embed)
 
 #### Para el LOOP ###################################################
 
@@ -133,7 +143,20 @@ async def _setcumple(ctx,dia=None,mes=None,inicial=None):
 # ver los datos guardados ###########
 @bot.command(name='ver')
 async def _getcumple(ctx):
-    await ctx.send(json.dumps(funciones.get_miembros(),indent=3))
+	miembros = funciones.get_miembros()
+
+	mensaje = f"Estos son los cumpleaños de {ctx.message.guild.name}: \n"
+
+	for clave, persona in miembros.items():
+		#se evita count que es el primer elemento en el json
+		if (clave!= "count" and persona["Server"] == ctx.message.guild.id):
+			nueva_linea = ("\n**"+persona["Nombre"]+":** ("+persona["dia"]+"/"+persona["mes"]+")")
+			mensaje = mensaje + nueva_linea
+
+	embed = discord.Embed(title = "Cumpleaños!!",color=rosadito,description = mensaje)			
+	await ctx.send(embed = embed)
+
+
 
 
 # prueba de cambio de nick ##########
