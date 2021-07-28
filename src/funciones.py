@@ -1,6 +1,6 @@
 import json
 import datetime
-import os           #para el get current directory (gcd) (BORRAR)
+import os           #para el get current directory (gcd) (BORRAR DESPUES)
 
 
 
@@ -17,7 +17,8 @@ def add_cumple(nuevo_miembro):
         respuestas = {
             1: "Para introducir un cumpleaños debe ser de esta manera:\n cumplecargar <dia> <mes> <inicial>",
             2: "El formato debería ser:\n cumplecargar <dia> <mes> <inicial>",
-            3: "Esa fecha no es válida"
+            3: "La inicial debería tener sol una letra",
+            4: "Esa fecha no es válida"
         }
         return respuestas[ans]
 
@@ -70,9 +71,10 @@ def es_miembro_invalido(miembro):
         retorna numericos para distintos tipos de errores
         1: datos son nulos
         2: datos no son del tipo correcto
-        3: fecha invalida
+        3: la inicial tiene mas de una letra
+        4: fecha invalida
         
-        0: no detectó ningun error
+        0: no detectó ningun error, el miembro sí es valido
     """
     dia = miembro["dia"]
     mes = miembro["mes"]
@@ -80,10 +82,12 @@ def es_miembro_invalido(miembro):
 
     if (dia==None or mes==None or inicial== None):
         return 1
-    if ( not(str(dia).isnumeric()) or not(str(mes).isnumeric()) or len(inicial)>1):
+    if ( not(str(dia).isnumeric()) or not(str(mes).isnumeric()) ):
         return 2
+    if (len(inicial)>1):
+        return 3
     if (verificar_fecha(mes,dia) == False):
-        return 3   
+        return 4   
     
     return 0
 
@@ -102,8 +106,18 @@ def str_proximo_cumple(server):
     dia_actual = datetime.date.today().day
     miembros = get_miembros()
     proxima_persona = find_next_birthday(server,miembros)
-    dias_que_faltan = diferencia_de_fechas(mes_actual,dia_actual,int(proxima_persona["mes"]),int(proxima_persona["dia"]))
-    return ("El proximo cumple es el de "+proxima_persona["Nombre"]+" ("+proxima_persona["dia"]+"/"+proxima_persona["mes"]+"), Faltan "+str(dias_que_faltan)+" dias!!!!")
+    #para mas readability
+    nombre = proxima_persona["Nombre"] 
+    dia = proxima_persona["dia"]
+    mes = proxima_persona["mes"]
+
+    dias_que_faltan = diferencia_de_fechas(mes_actual,dia_actual,int(mes),int(dia))
+    if (dias_que_faltan>1):
+        return ("El proximo cumple es el de "+nombre+" ("+dia+"/"+mes+"), Faltan "+str(dias_que_faltan)+" dias!!!!")
+    elif (dias_que_faltan==1):
+        return ("El proximo cumple es el de "+nombre+" ("+dia+"/"+mes+"), Es mañana!!!")
+    else: ## asumo que dias que faltan no es menor a 0 xd 
+        return ("Feliz cumple "+nombre+"!!!!")
 
 
 
@@ -113,7 +127,7 @@ def str_proximo_cumple(server):
 
 def find_next_birthday(server,miembros):
     """
-        Encuentra a persona con el cumpleaños mas proximo en un server especifico
+        Encuentra a la persona con el cumpleaños mas proximo en un server especifico
         
         Parametros:
             server (str) : Id del server

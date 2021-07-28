@@ -1,17 +1,23 @@
 
+from os import truncate
 import discord
 import funciones
 from discord.ext import tasks,commands    
 from decouple import config         #es para ver las variables definidas en el  .env
 import json
+from discord import Color
 
-intent = discord.Intents.default()
+intent = discord.Intents.default() # para tener permiso de cambiar los nombres
 intent.members = True
 
+    
+## Cambia la Actividad del bot para que diga "listening to cumplehelp" ###############################
+#source: https://stackoverflow.com/questions/59126137/how-to-change-discord-py-bot-activity
+activity = discord.Activity(type=discord.ActivityType.listening, name="/cumpleayuda")
 
 
-
-bot = commands.Bot(command_prefix='cumple', intents=intent)
+# Inicia el Bot
+bot = commands.Bot(command_prefix='/cumple',activity=activity, intents=intent)
 
 @bot.event
 async def on_ready():
@@ -21,6 +27,26 @@ async def on_ready():
 async def _owo(ctx):
     await ctx.send("owo")
 
+## para HELP #########################################################
+
+bot.remove_command("help")
+
+@bot.group(invoke_without_command=True)
+async def ayuda(ctx):
+	embed = discord.Embed(title = "Hola",color=Color.from_rgb(255,192,203),description = "Usa /cumpleayuda <comando> para una descripcion más específica de cada comando (mentira eso no esta todavia)")
+	embed.set_thumbnail(url="https://raw.githubusercontent.com/alcabvaldo/BirthdayBot/main/logo.png")
+
+	embed.add_field(name="cumplecargar",value="carga un cumple nuevo, o actualiza uno que ya esté guardado")
+	embed.add_field(name="cumpleproximo",value="te cuenta cuál será el próximo cumpleaños")
+	embed.add_field(name="nose",value="nose")
+
+	await ctx.send(embed = embed)
+
+@ayuda.command()
+async def cumplecargar(ctx):
+	embed = discord.Embed(title = "cumplecargar",description = "Usa /cumpleayuda <comando> para una descripcion más específica de cada comando (mentira eso no esta todavia)")
+	embed.add_field(name="cumplecargar",value="carga un cumple nuevo, o actualiza uno que ya esté guardado")
+	
 
 
 
