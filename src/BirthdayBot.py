@@ -147,6 +147,8 @@ async def _getcumple(ctx):
 
 	mensaje = f"Estos son los cumpleaños de {ctx.message.guild.name}: \n"
 
+
+
 	for clave, persona in miembros.items():
 		#se evita count que es el primer elemento en el json
 		if (clave!= "count" and persona["Server"] == ctx.message.guild.id):

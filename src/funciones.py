@@ -17,7 +17,7 @@ def add_cumple(nuevo_miembro):
         respuestas = {
             1: "Para introducir un cumpleaños debe ser de esta manera:\n cumplecargar <dia> <mes> <inicial>",
             2: "El formato debería ser:\n cumplecargar <dia> <mes> <inicial>",
-            3: "La inicial debería tener sol una letra",
+            3: "La inicial debería tener solo una letra",
             4: "Esa fecha no es válida"
         }
         return respuestas[ans]
