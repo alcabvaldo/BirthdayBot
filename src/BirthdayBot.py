@@ -27,7 +27,12 @@ async def on_ready():
 async def _uwu(ctx):
     await ctx.send("owo")
 
+@bot.command(name='owo')
+async def _uwu(ctx):
+    await ctx.send("uwu")
+
 ## para HELP #########################################################
+#inspiracion: https://www.youtube.com/watch?v=ivXw9VO89jw
 
 bot.remove_command("help")
 rosadito = Color.from_rgb(255,192,203)
