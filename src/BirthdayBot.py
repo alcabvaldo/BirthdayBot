@@ -95,7 +95,7 @@ async def change_member_names():
             for member in guild.members:
 
                 print("ahora intentare cambiar "+str(member))
-                oldname = member.name
+                oldname = member.nick
                 #cambia la primera letra
                 try:
                     newname = inicial + oldname[1:len(oldname)] #desde la segunda letra hasta el final del nombre
