@@ -155,7 +155,7 @@ def find_next_birthday(server,miembros):
                 mindiff = dif
                 persona_mas_cercana = persona
 
-    if (persona_mas_cercana): #por si no haya nadie
+    if (persona_mas_cercana and dif<=15): #por si no encontro nadie, o falte mas de 15 dias para el cumpleaños
         return persona_mas_cercana    
 
 
