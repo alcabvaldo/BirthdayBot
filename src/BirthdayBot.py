@@ -89,26 +89,28 @@ async def change_member_names():
 
         cumpleañero = funciones.find_next_birthday(guild.id,miembros)
         
-        mes_actual = datetime.date.today().month
-        dia_actual = datetime.date.today().day
-        dif = funciones.diferencia_de_fechas(mes_actual,dia_actual,int(cumpleañero["mes"]),int(cumpleañero["dia"]))
+        if (cumpleañero): #  por si no haya nadie
 
-        if (cumpleañero and dif<=15): # por si no haya nadie, o falte mas de 15 dias para el cumpleaños
+            mes_actual = datetime.date.today().month
+            dia_actual = datetime.date.today().day
+            dif = funciones.diferencia_de_fechas(mes_actual,dia_actual,int(cumpleañero["mes"]),int(cumpleañero["dia"]))
 
-            inicial = cumpleañero["Inicial"]
+            if (dif<=15): # no hace nada si falta mas de 15 dias para el cumpleaños
 
-            for member in guild.members:
+                inicial = cumpleañero["Inicial"]
 
-                print("ahora intentare cambiar "+str(member))
-                oldname = member.nick
-                #cambia la primera letra
-                try:
-                    newname = inicial + oldname[1:len(oldname)] #desde la segunda letra hasta el final del nombre
-                    await member.edit(nick=newname)
-                    
-                #no cambia los nombres de los miembros con roles superiores
-                except Exception as e :
-                    print(e)
+                for member in guild.members:
+
+                    print("ahora intentare cambiar "+str(member))
+                    oldname = member.nick
+                    #cambia la primera letra
+                    try:
+                        newname = inicial + oldname[1:len(oldname)] #desde la segunda letra hasta el final del nombre
+                        await member.edit(nick=newname)
+                        
+                    #no cambia los nombres de los miembros con roles superiores
+                    except Exception as e :
+                        print(e)
 
 
 @change_member_names.before_loop
