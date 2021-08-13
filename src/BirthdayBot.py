@@ -6,6 +6,7 @@ from discord.ext import tasks,commands
 from decouple import config         #es para ver las variables definidas en el  .env
 import json
 from discord import Color #https://stackoverflow.com/questions/63768372/color-codes-for-discord-py
+import datetime
 
 intent = discord.Intents.default() # para tener permiso de cambiar los nombres
 intent.members = True
@@ -87,8 +88,12 @@ async def change_member_names():
     for guild in bot.guilds:
 
         cumpleañero = funciones.find_next_birthday(guild.id,miembros)
+        
+        mes_actual = datetime.date.today().month
+        dia_actual = datetime.date.today().day
+        dif = funciones.diferencia_de_fechas(mes_actual,dia_actual,int(cumpleañero["mes"]),int(cumpleañero["dia"]))
 
-        if (cumpleañero): # por si no haya nadie
+        if (cumpleañero and dif<=15): # por si no haya nadie, o falte mas de 15 dias para el cumpleaños
 
             inicial = cumpleañero["Inicial"]
 
