@@ -111,6 +111,12 @@ async def change_member_names():
                     #no cambia los nombres de los miembros con roles superiores
                     except Exception as e :
                         print(e)
+                
+            #función extra
+            if (dif==7):
+                mensaje = "que se hace para el cumple de "+cumpleañero["Nombre"]+"?"
+                await guild.text_channels[1].send(mensaje)
+                # esa posicion 1 es especifica para server noice jaja
 
 
 @change_member_names.before_loop
