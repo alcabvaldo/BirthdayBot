@@ -122,6 +122,33 @@ def str_proximo_cumple(server):
 
 
 
+def str_cumples_ordenados(server):
+    miembros = get_miembros()
+    miembros.pop("count") #esto podria cambiar si arreglo el json, remueve count
+
+    #miembros.sort(key=funcion_fecha)
+    miembros_ordenados = sorted(miembros.items(),key=funcion_fecha)
+    
+    mensaje = f": \n" #esto completa el mensaje de la otra funcion, lo hice asi por falta de tiempo, se puede ver para cambiar
+    for clave, persona in miembros_ordenados:
+		#en realidad ya borre count pero dejo nomas asi
+	    if (clave!= "count" and persona["Server"] == server):
+		    nueva_linea = ("\n**"+persona["Nombre"]+":** ("+persona["dia"]+"/"+persona["mes"]+")")
+		    mensaje = mensaje + nueva_linea
+    
+    return mensaje
+
+#parametro para SORT de miembros
+def funcion_fecha(miembro):
+    persona = miembro[1]
+    #fecha actual en dias desde 1 de enero
+    mes_actual = datetime.date.today().month
+    dia_actual = datetime.date.today().day
+    return diferencia_de_fechas(mes_actual,dia_actual,int(persona["mes"]),int(persona["dia"]))
+
+
+
+
 
 
 

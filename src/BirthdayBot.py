@@ -161,20 +161,12 @@ async def _setcumple(ctx,dia=None,mes=None,inicial=None):
 # ver los datos guardados ###########
 @bot.command(name='ver')
 async def _getcumple(ctx):
-	miembros = funciones.get_miembros()
+    server = ctx.message.guild.id
+    mensaje = f"Estos son los cumpleaños de {ctx.message.guild.name}"
+    mensaje += funciones.str_cumples_ordenados(server) #aca se completa el mensaje
 
-	mensaje = f"Estos son los cumpleaños de {ctx.message.guild.name}: \n"
-
-
-
-	for clave, persona in miembros.items():
-		#se evita count que es el primer elemento en el json
-		if (clave!= "count" and persona["Server"] == ctx.message.guild.id):
-			nueva_linea = ("\n**"+persona["Nombre"]+":** ("+persona["dia"]+"/"+persona["mes"]+")")
-			mensaje = mensaje + nueva_linea
-
-	embed = discord.Embed(title = "Cumpleaños!!",color=rosadito,description = mensaje)			
-	await ctx.send(embed = embed)
+    embed = discord.Embed(title = "Cumpleaños!!",color=rosadito,description = mensaje)			
+    await ctx.send(embed = embed)
 
 
 
